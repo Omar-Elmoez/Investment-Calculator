@@ -3,24 +3,21 @@ import logo from "./assets/investment-calculator-logo.png";
 import Form from "./components/Form";
 import Table from "./components/Table";
 function App() {
-  const [dataOfYear, setDataOfYear] = useState([]);
+  const [dataOfYear, setDataOfYear] = useState(null);
+  const [formData, setFormData] = useState(null)
   const calculateHandler = (userInput) => {
-    // Should be triggered when form is submitted
-    // You might not directly want to bind it to the submit event on the form though...
-    
-    const yearlyData = []; // per-year results
+    setFormData(userInput)
+    const yearlyData = [];
 
-    let currentSavings = +userInput["current-savings"]; // feel free to change the shape of this input object!
-    const yearlyContribution = +userInput["yearly-contribution"]; // as mentioned: feel free to change the shape...
-    const expectedReturn = +userInput["expected-return"] / 100;
-    const duration = +userInput["duration"];
+    let currentSavings = userInput["current-savings"];
+    const yearlyContribution = userInput["yearly-contribution"];
+    const expectedReturn = userInput["expected-return"] / 100;
+    const duration = userInput["duration"];
 
-    // The below code calculates yearly results (total savings, interest etc)
     for (let i = 0; i < duration; i++) {
       const yearlyInterest = currentSavings * expectedReturn;
       currentSavings += yearlyInterest + yearlyContribution;
       yearlyData.push({
-        // feel free to change the shape of the data pushed to the array!
         year: i + 1,
         yearlyInterest: yearlyInterest,
         savingsEndOfYear: currentSavings,
@@ -38,10 +35,11 @@ function App() {
       </header>
 
       <Form calculateHandler={calculateHandler} />
-
-      {/* Todo: Show below table conditionally (only once result data is available) */}
-      {/* Show fallback text if no data is available */}
-      {dataOfYear[0]?.year && <Table data={dataOfYear} />}
+      {dataOfYear ? (
+        <Table data={dataOfYear} initialInvestment={formData["current-savings"]} />
+      ) : (
+        <p style={{textAlign: "center"}}>No Investment Calculated Yet</p>
+      )}
     </div>
   );
 }

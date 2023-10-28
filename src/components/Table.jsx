@@ -1,6 +1,12 @@
 /* eslint-disable react/prop-types */
 
-import styles from './Table.module.css'
+import styles from "./Table.module.css";
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
 function Table(props) {
   return (
     <table className={styles.result}>
@@ -14,24 +20,29 @@ function Table(props) {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>YEAR NUMBER</td>
-          <td>TOTAL SAVINGS END OF YEAR</td>
-          <td>INTEREST GAINED IN YEAR</td>
-          <td>TOTAL INTEREST GAINED</td>
-          <td>TOTAL INVESTED CAPITAL</td>
-        </tr>
-        {props.data.map(item => {
-          return (
-            <tr key={item.year}>
-              <td>{item.year}</td>
-              <td>{item.savingsEndOfYear}</td>
-              <td>{item.yearlyInterest}</td>
-              <td>{item.yearlyContribution}</td>
-              <td>{item.invested_capital}</td>
-            </tr>
-          )
-        })}
+        {props.data &&
+          props.data.map((item) => {
+            return (
+              <tr key={item.year}>
+                <td>{item.year}</td>
+                <td>{formatter.format(item.savingsEndOfYear)}</td>
+                <td>{formatter.format(item.yearlyInterest)}</td>
+                <td>
+                  {formatter.format(
+                    item.savingsEndOfYear -
+                      props.initialInvestment -
+                      item.yearlyContribution * item.year
+                  )}
+                </td>
+                <td>
+                  {formatter.format(
+                    props.initialInvestment +
+                      item.yearlyContribution * item.year
+                  )}
+                </td>
+              </tr>
+            );
+          })}
       </tbody>
     </table>
   );

@@ -2,26 +2,23 @@
 import { useState } from "react";
 import styles from "./Form.module.css";
 
+const initialFormData = {
+  "current-savings": "",
+  "yearly-contribution": "",
+  "expected-return": "",
+  duration: "",
+};
+
 function Form(props) {
-  const [formData, setFormData] = useState({
-    "current-savings": "",
-    "yearly-contribution": "",
-    "expected-return": "",
-    duration: "",
-  });
+  const [formData, setFormData] = useState(initialFormData);
   const formDataHandler = (e) => {
     setFormData((prevState) => ({
       ...prevState,
-      [e.target.name]: e.target.value,
+      [e.target.name]: +e.target.value,
     }));
   };
   const resetHandler = () => {
-    setFormData({
-      "current-savings": "",
-      "yearly-contribution": "",
-      "expected-return": "",
-      duration: "",
-    })
+    setFormData(initialFormData);
     props.calculateHandler(formData);
   };
   const submitHandler = (e) => {
@@ -30,7 +27,7 @@ function Form(props) {
   };
   return (
     <form className={styles.form} onSubmit={submitHandler}>
-      <div className={styles['input-group']}>
+      <div className={styles["input-group"]}>
         <p>
           <label htmlFor="current-savings">Current Savings ($)</label>
           <input
@@ -52,7 +49,7 @@ function Form(props) {
           />
         </p>
       </div>
-      <div className={styles['input-group']}>
+      <div className={styles["input-group"]}>
         <p>
           <label htmlFor="expected-return">
             Expected Interest (%, per year)
@@ -77,7 +74,11 @@ function Form(props) {
         </p>
       </div>
       <p className={styles.actions}>
-        <button type="reset" className={styles.buttonAlt} onClick={resetHandler}>
+        <button
+          type="reset"
+          className={styles.buttonAlt}
+          onClick={resetHandler}
+        >
           Reset
         </button>
         <button type="submit" className={styles.button}>
